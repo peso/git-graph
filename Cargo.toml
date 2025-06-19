@@ -18,7 +18,8 @@ debug-assertions = false
 overflow-checks = false
 
 [dependencies]
-git2 = {version = "0.20", default-features = false, optional = false}
+git2 = {version = "0.20", default-features = false, optional = true}
+gix = {version = "0.72.1", default-features = false, optional = true}
 regex = {version = "1.7", default-features = false, optional = false, features = ["std"]}
 serde = "1.0"
 serde_derive = {version = "1.0", default-features = false, optional = false}
@@ -34,3 +35,25 @@ crossterm = {version = "0.25", optional = false}
 chrono = {version = "0.4", optional = false}
 textwrap = {version = "0.16", default-features = false, optional = false, features = ["unicode-width"]}
 tracing = "0.1.41"
+
+[features]
+
+# Using the library with defaults will give you the git2 backend
+default = ["git2-backend"]
+
+# Include default git backend. If left out you must push data to GitGraph
+git2-backend = ["dep:git2"]
+
+# Git Oxide gix backend. This is only used by the example change_backend
+gix-backend = ["dep:gix"]
+
+
+[[bin]]
+name = "git-graph"
+default-features = true
+
+[[example]]
+name = "change_backend"
+doc = true
+default-features = false
+required-features = ["gix-backend"]

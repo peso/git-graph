@@ -147,6 +147,132 @@ impl BranchGraph {
             branch: vec![],
         }
     }
+
+    /* This code is no longer needed
+    
+    /// Add more labels to graph. This will cause a recomputation that
+    /// worst case affect the entire graph.
+    pub fn add_branch_heads<F: BranchFeed>(&mut self, branch_feed: F) {
+        // Collection of commit id that has changed branch
+        let mut needs_retrace = PriorityQueue::new();
+        for label in branch_feed {
+            let trace = BranchTrace {
+                name: label.name(),
+                target: label.commit_id(),
+                persistence: label.persistence(),
+            };
+            // Skip branch if target commit is taken by stronger branch
+            if let Some(&commit_branch) = self.commit_branch.get(&trace.target) {
+                let commit_pers = self.branch[commit_branch].persistence;
+                if commit_pers > trace.persistence {
+                    // TODO how about equal persistence?
+                    // If == is ignored, then a retrace will happen for everey
+                    // such branch in feed
+                    continue;
+                }
+            }
+            // Terminate branch that was reaching for this commit
+            if let Some(old_branch) = self.open_branch.remove(trace.target) {
+                // TODO maybe old_branch want to know where it stops?
+                // old_branch.ancestor_commit = trace.target
+            }
+            // Create new branch
+            let commit_id = trace.target;
+            let branch_id = self.branch.len();
+            self.branch.push(trace);
+            if self.commit_branch.contains_key(&commit_id) {
+                needs_retrace.push(commit_id);
+            }
+            self.open_branch.insert(commit_id, branch_id);
+            
+        }
+
+        // Any new branch that cut an existing branch, 
+        // due to higher persistence, will now be traced as long as it can
+        while let Some((commit_id, persistence)) = needs_retrace.pop() {
+            for par in commit.parents() {
+                if par.branch_trace.persistence < persistence {
+                    needs_retrace.push((par, par_pers));
+                }
+            }
+        }
+    }
+
+    /// Recompute structure given more Extend a branch graph with more commits
+    pub fn extend_commits<CF: CommitFeed>(&mut self, commit_feed: CF) {
+        let add_commit = |commit| {
+            let merge_branches = parse_message(commit);
+            let zip_child_branch_name = magic(merge_branches, commit.parents());
+            let mut first_parent = true;
+            for (parent, branch_name) in zip_child_branch_name {
+                if first_parent {
+                    // Try to claim primary parent commit for branch
+                    let branch = find_branch(commit);
+                    try_claim(branch, first_parent)
+                    first_parent = false;
+                } else {
+                    // The commit is a merge, create a branch for each merged commit
+                    create_branch_from_branch_message(parent, branch_name)
+                }
+            }
+        }
+        for commit in commit_feed {
+            add_commit(commit);
+        }
+
+    }
+
+    /// Merge two branch graphs. Assume that self is larger,
+    //  was made first, with younger commits.
+    //  other is smaller and contain ancestors relative to self.
+    pub fn consume(&mut self, other: Self) {
+        // other.branch is appended to self.branch. This will change
+        // their branch id (Bid) with an offset
+        let other_branch_offset = self.branch.len();
+
+        // Merge commit_branch links
+        for (commit_id, other_bid) in other.commit_branch.into_iter() {
+            let self_entity = self.commit_branch.entity(commit_id);
+            if let Occupied(occ) = self_entity {
+                // Check if self_entity branc has higher pirotity.
+                // In that case do not overwrite it
+                let self_bid = *occ.get();
+                let self_pers = self.branch[self_bid].persistence;
+                let other_pers = other.branch[other_bid].persistence;
+                if self_pers > other_pers {
+                    continue;
+                }
+            }
+            // Either Vacant or Occupied but lower or equal priority,
+            // so overwrite with other oid
+            self_entity.insert(other_bid + other_branch_offset);
+        }
+
+        // Move 
+        self.branch.extend(other.branch.into_iter());
+
+        // TODO Consider an optimization where only branches that get
+        // a commit will be moved. In some cases a branch is fully
+        // consumed by another branch
+
+
+
+        // Transfer of commits is straightforward as they have already
+        // been parsed by other. However they may cause retracing of other
+        // cases:
+        // a) other commit was in self open branch
+        //    => resolve and set self commit_branch to the new branch
+        // b) other commit was in self commit_branch
+        //    This is bad. This is an overlap which should never happen
+        //    For now, panic with an error message.
+        //    Assume other is newer, but check if self has a more persistent
+        //    branch on it. If the latter is the case, discard other commit
+        //    if not, let other commit point to the new branch
+        // c) other commit unknown to self
+        //    => set self_commit_branch to new branch
+        self.add_commits
+    }
+    */
 }
 
 impl<'a> BranchGraphBuilder<'a> {

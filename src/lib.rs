@@ -11,9 +11,12 @@ use git2::Repository;
 use std::path::Path;
 
 pub mod config;
+#[cfg(feature="git2-backend")]
 pub mod graph;
 pub mod graph2;
+#[cfg(feature="git2-backend")]
 pub mod print;
+pub mod print2;
 pub mod settings;
 
 pub fn get_repo<P: AsRef<Path>>(

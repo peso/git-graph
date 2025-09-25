@@ -41,7 +41,7 @@ tracing = "0.1.41"
 # Using the library with defaults will give you the git2 backend
 default = ["git2-backend"]
 
-# Include default git backend. If left out you must push data to GitGraph
+# git2 backend. Used by default impementation GitGraph
 git2-backend = ["dep:git2"]
 
 # Git Oxide gix backend. This is only used by the example change_backend

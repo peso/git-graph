@@ -3,14 +3,10 @@
 use crate::graph2::BranchGraph;
 use std::cmp::max;
 
-pub use crate::print::colors;
-/* TODO figure out which should be used
+pub mod colors;
 pub mod format;
 pub mod svg;
 pub mod unicode;
-*/
-
-/* TODO reiimplementon graph2::BranchGraph, if needed. Otherwise KILL
 
 /// Find the index at which a between-branch connection
 /// has to deviate from the current branch's column.
@@ -47,4 +43,3 @@ fn get_deviate_index(graph: &GitGraph, index: usize, par_index: usize) -> usize 
         (par_index as i32 - 1) as usize
     }
 }
-*/

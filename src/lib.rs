@@ -13,8 +13,8 @@ use std::path::Path;
 pub mod config;
 #[cfg(feature="git2-backend")]
 pub mod git2;
-pub mod graph2;
-pub mod print2;
+pub mod graph;
+pub mod print;
 pub mod settings;
 
 pub fn get_repo<P: AsRef<Path>>(

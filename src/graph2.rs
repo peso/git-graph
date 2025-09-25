@@ -14,6 +14,7 @@ To trace the branches in a repository use [BranchGraph]. You will have
 to provide imlementations of traits [CommitFeed] and [BranchFeed].
 */
 
+use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
 
@@ -60,6 +61,17 @@ pub struct BranchTrace {
     // Persistence of branch means how hard it will work for claiming
     // ancestors. The highest persistence wins the fork race.
     pub persistence: Pers,
+}
+
+/// A builder that updates a BranchGraph with more information.
+/// This is used to provide fine grained control over how much effort
+/// is spent on traversing the graph.
+pub struct BranchGraphBuilder<'a> {
+    /// The branch graph that is being updated
+    graph: &'a mut BranchGraph,
+
+    /// A queue of commits that will be examined
+    queue: BinaryHeap<Oid>,
 }
 
 
@@ -129,3 +141,54 @@ pub trait BranchFeed: RepoProxy + Iterator<Item: BranchInfo> {
 //  Implementation
 //
 
+impl BranchGraph {
+    /// Create an empty branch graph
+    pub fn empty() -> Self {
+        BranchGraph {
+            commit_branch: HashMap::new(),
+            branch: vec![],
+            open_branch: HashMap::<_,_>::new(),
+        }
+    }
+
+    /// Add more labels to graph. This will cause a recomputation that
+    /// worst case affect the entire graph.
+    pub fn add_branch_heads<F: BranchFeed>(&mut self, branch_feed: F) {
+    }
+
+    /// Recompute structure given more Extend a branch graph with more commits
+    pub fn extend_commits<CF: CommitFeed>(&mut self, commit_feed: CF) {
+    }
+
+    /// Merge two branch graphs. Assume that self is larger,
+    //  was made first, with younger commits.
+    //  other is smaller and contain ancestors relative to self.
+    pub fn consume(&mut self, other: Self) {
+    }
+}
+
+impl<'a> BranchGraphBuilder<'a> {
+    /// Create an empty branch graph builder
+    pub fn new(graph: &'a mut BranchGraph) -> Self {
+        Self {
+            graph,
+            queue: BinaryHeap::new(),
+        }
+    }
+
+    /// Add a commit to the 
+    pub fn push(commit_id: Oid) {
+
+    }
+
+    /// Process one iteration of branch extension.
+    /// Return true if there is still work to be done, and you must call
+    /// it again.
+    pub fn iterate(&mut self) -> bool {
+        // TODO Process one iteration
+
+        // Return true if more work should be done
+        self.queue.peek().is_some()
+    }
+
+}

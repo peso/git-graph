@@ -12,6 +12,7 @@ use std::path::Path;
 
 pub mod config;
 pub mod graph;
+pub mod graph2;
 pub mod print;
 pub mod settings;
 

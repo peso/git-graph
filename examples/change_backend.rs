@@ -105,6 +105,15 @@ impl graph2::RepoProxy for RepoProxy {
     }
 }
 
+impl graph2::CommitFeed for RepoProxy {
+    
+}
+
+impl graph2::BranchFeed for RepoProxy {
+    
+}
+
 struct CommitInfo {
     oid: git2_OID,
 }
+    

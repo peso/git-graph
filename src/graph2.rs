@@ -38,8 +38,6 @@ pub struct BranchGraph {
     commit_branch: HashMap<Oid,Bid>,
     /// All defined branches
     branch: Vec<BranchTrace>,
-    /// Maps a commit id to the branch reaching for it
-    open_branch: HashMap<Oid,Bid>,
 }
 
 
@@ -147,23 +145,7 @@ impl BranchGraph {
         BranchGraph {
             commit_branch: HashMap::new(),
             branch: vec![],
-            open_branch: HashMap::<_,_>::new(),
         }
-    }
-
-    /// Add more labels to graph. This will cause a recomputation that
-    /// worst case affect the entire graph.
-    pub fn add_branch_heads<F: BranchFeed>(&mut self, branch_feed: F) {
-    }
-
-    /// Recompute structure given more Extend a branch graph with more commits
-    pub fn extend_commits<CF: CommitFeed>(&mut self, commit_feed: CF) {
-    }
-
-    /// Merge two branch graphs. Assume that self is larger,
-    //  was made first, with younger commits.
-    //  other is smaller and contain ancestors relative to self.
-    pub fn consume(&mut self, other: Self) {
     }
 }
 

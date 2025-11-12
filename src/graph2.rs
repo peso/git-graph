@@ -109,13 +109,6 @@ pub trait CommitInfo {
     fn parents() -> Vec<Oid>;
 }
 
-/// Information about a single branch
-pub trait BranchInfo {
-    fn name(&self) -> String;
-    fn commit_id(&self) -> Oid;
-    fn persistence(&self) -> Pers;
-}
-
 /// A subset of all commits in the repository.
 pub trait RepoProxy {
     /// Test if a commit is in proxy cache. If not, then 
@@ -124,14 +117,6 @@ pub trait RepoProxy {
     /// Find the synthetic ids of the parents.
     /// For commit id not loaded, return an empty vec.
     fn parents(child: Oid) -> Vec<Oid>;
-}
-
-/// Provide commit information to a branch graph
-pub trait CommitFeed: RepoProxy + Iterator<Item: CommitInfo> {
-}
-
-/// Provide branch information to a branch graph
-pub trait BranchFeed: RepoProxy + Iterator<Item: BranchInfo> {
 }
 
 
